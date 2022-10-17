@@ -1,6 +1,7 @@
 const { expect } = require("chai");
 const hre = require("hardhat");
 const ethers = hre.ethers;
+const { BigNumber } = require("ethers");
 
 ///////////////////////////////////////////////////
 /*          CHALLENGE 3 (TO BE RESOLVED)         */
@@ -108,7 +109,30 @@ describe("Solve Challenge 3", function () {
 
     //======= COMPLETE THIS SECTION AS YOU REQUIRE =======
 
-    //====================================================
+    const exploitFactory = await ethers.getContractFactory("Exploit3");
+    exploit = await exploitFactory
+      .connect(challenger)
+      .deploy(
+        isecToken.address,
+        boringToken.address,
+        pool.address,
+        dex.address,
+        lendingPlatform.address,
+        challengerAddress
+      );
+
+    await exploit.deployed();
+
+    await exploit.start();
+
+    const challengerProfit = BigNumber.from(
+      await isecToken.balanceOf(challengerAddress)
+    ).toString();
+    console.log(
+      "Challenger's profit:",
+      ethers.utils.formatEther(challengerProfit),
+      "$ISEC"
+    );
 
     ///////////////////////////////////////////////////
     /*     Check if Challenge has been solved        */
